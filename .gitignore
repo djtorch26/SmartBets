@@ -131,3 +131,4 @@ dmypy.json
 
 # OWN SETUP
 .key
+key.py
