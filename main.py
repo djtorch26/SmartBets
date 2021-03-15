@@ -32,8 +32,11 @@ if not sports_json['success']:
     print(sports_json['msg'])
 
 else:
+    #listofSports='List of in season sports:' + sports_json['data']
     print('List of in season sports:', sports_json['data'])
-
+    with open('output.json','w') as outfile:
+        json.dump('List of in season sports:',outfile, indent=4, sort_keys=True)
+        json.dump(sports_json['data'],outfile, indent=4, sort_keys=True)
 
 
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # 
@@ -56,12 +59,17 @@ if not odds_json['success']:
     print(odds_json['msg'])
 
 else:
-    with open('output.json','w') as outfile:
-        json.dump(odds_json['data'],outfile, separators=(',', ':'))
+    NUMEvents = 'Number of events: ' + str(len(odds_json['data']))
+    RequestsRem = 'Remaining requests ' + str(odds_response.headers['x-requests-remaining'])
+                                                        
+    with open('output.json','a') as outfile:
+        json.dump(NUMEvents, outfile, indent=4, sort_keys=True)
+        json.dump(odds_json['data'],outfile, indent=4, sort_keys=True)
+        json.dump(RequestsRem, outfile, indent=4, sort_keys=True)
         
     print('Number of events:', len(odds_json['data']))
     print(odds_json['data'])
 
     # Check your usage
-    print('Remaining requests', odds_response.headers['x-requests-remaining'])
+    print('Remaining requests ', odds_response.headers['x-requests-remaining'])
     print('Used requests', odds_response.headers['x-requests-used'])
