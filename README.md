@@ -22,7 +22,8 @@ API_KEY = k.getApiKey()
 
 Run main.py and read output.json
 
-##Future Updates
+## Future Updates
+
 -Planning on adding a parsing function to output odds values to a better format for ease of use. 
 
 
