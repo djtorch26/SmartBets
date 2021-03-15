@@ -3,61 +3,65 @@ import requests
 import key as k
 
 # An api key is emailed to you when you sign up to a plan
-api_key = k.getApiKey()
+# Get a free API key at https://api.the-odds-api.com/
+API_KEY = k.getApiKey()
 
+SPORT = 'upcoming' # use the sport_key from the /sports endpoint below, or use 'upcoming' to see the next 8 games across all sports
+
+REGION = 'us' # uk | us | eu | au
+
+MARKET = 'h2h' # h2h | spreads | totals
+
+ODDS = 'american' # decimal  | american
+
+
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # 
+#
 # First get a list of in-season sports
+#   the sport 'key' from the response can be used to get odds in the next request
+#
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # 
+
 sports_response = requests.get('https://api.the-odds-api.com/v3/sports', params={
-    'api_key': api_key
+    'api_key': API_KEY
 })
 
 sports_json = json.loads(sports_response.text)
 
 if not sports_json['success']:
-    print(
-        'There was a problem with the sports request:',
-        sports_json['msg']
-    )
+    print(sports_json['msg'])
 
 else:
-    print()
-    print(
-        'Successfully got {} sports'.format(len(sports_json['data'])),
-        'Here\'s the first sport:'
-    )
-    print(sports_json['data'][0])
+    print('List of in season sports:', sports_json['data'])
 
 
 
-# To get odds for a sepcific sport, use the sport key from the last request
-#   or set sport to "upcoming" to see live and upcoming across all sports
-sport_key = 'upcoming'
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # 
+#
+# Now get a list of live & upcoming games for the sport you want, along with odds for different bookmakers
+#
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # 
 
 odds_response = requests.get('https://api.the-odds-api.com/v3/odds', params={
-    'api_key': api_key,
-    'sport': sport_key,
-    'region': 'uk', # uk | us | eu | au
-    'mkt': 'h2h' # h2h | spreads | totals
+    'api_key': API_KEY,
+    'sport': SPORT,
+    'region': REGION,
+    'mkt': MARKET,
+    'oddsFormat' : ODDS,
 })
 
 odds_json = json.loads(odds_response.text)
+
 if not odds_json['success']:
-    print(
-        'There was a problem with the odds request:',
-        odds_json['msg']
-    )
+    print(odds_json['msg'])
 
 else:
-    # odds_json['data'] contains a list of live and 
-    #   upcoming events and odds for different bookmakers.
-    # Events are ordered by start time (live events are first)
-    print()
-    print(
-        'Successfully got {} events'.format(len(odds_json['data'])),
-        'Here\'s the first event:'
-    )
-    print(odds_json['data'][0])
+    with open('output.json','w') as outfile:
+        json.dump(odds_json['data'],outfile, separators=(',', ':'))
+        
+    print('Number of events:', len(odds_json['data']))
+    print(odds_json['data'])
 
     # Check your usage
-    print()
     print('Remaining requests', odds_response.headers['x-requests-remaining'])
     print('Used requests', odds_response.headers['x-requests-used'])
