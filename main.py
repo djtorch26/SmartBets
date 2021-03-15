@@ -4,7 +4,8 @@ import key as k
 
 # An api key is emailed to you when you sign up to a plan
 # Get a free API key at https://api.the-odds-api.com/
-API_KEY = k.getApiKey()
+
+API_KEY = k.getApiKey() #replace k.getApiKey() with your personal API key gathered from the website above
 
 SPORT = 'upcoming' # use the sport_key from the /sports endpoint below, or use 'upcoming' to see the next 8 games across all sports
 
@@ -37,7 +38,7 @@ else:
     with open('output.json','w') as outfile:
         json.dump('List of in season sports:',outfile, indent=4, sort_keys=True)
         json.dump(sports_json['data'],outfile, indent=4, sort_keys=True)
-
+        outfile.close()
 
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # 
 #
@@ -63,9 +64,11 @@ else:
     RequestsRem = 'Remaining requests ' + str(odds_response.headers['x-requests-remaining'])
                                                         
     with open('output.json','a') as outfile:
+        json.dump('%%%%%%%%%%%%%%%   ODDS BEGIN   %%%%%%%%%%%%%%%%%%%%%%', outfile, indent=4, sort_keys=True)
         json.dump(NUMEvents, outfile, indent=4, sort_keys=True)
         json.dump(odds_json['data'],outfile, indent=4, sort_keys=True)
         json.dump(RequestsRem, outfile, indent=4, sort_keys=True)
+        outfile.close()
         
     print('Number of events:', len(odds_json['data']))
     print(odds_json['data'])
